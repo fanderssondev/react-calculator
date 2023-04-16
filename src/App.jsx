@@ -152,7 +152,6 @@ function App() {
     {}
   );
 
-  // NOTE Keyboard functionality currently not working
   useEffect(() => {
     document.addEventListener('keydown', detectKeyDown);
   }, []);
@@ -175,15 +174,10 @@ function App() {
       case '+':
       case '-':
       case '*':
-        dispatch({
-          type: ACTIONS.CHOOSE_OPERATION,
-          payload: { operation: e.key },
-        });
-        break;
       case '/':
         dispatch({
           type: ACTIONS.CHOOSE_OPERATION,
-          payload: { operation: '÷' },
+          payload: { operation: e.key === '/' ? '÷' : e.key },
         });
         break;
       case 'Enter':
