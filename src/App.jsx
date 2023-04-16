@@ -68,13 +68,6 @@ function reducer(state, { type, payload }) {
 
     case ACTIONS.CLEAR:
       return {};
-    // NOTE To show a 0 instead of nothing
-    // return {
-    //   ...state,
-    //   currentOperand: '0',
-    //   previousOperand: null,
-    //   operation: null,
-    // };
 
     case ACTIONS.DELETE_DIGIT:
       if (state.overwrite) {
@@ -160,15 +153,50 @@ function App() {
   );
 
   // NOTE Keyboard functionality currently not working
-  // useEffect(() => {
-  //   document.addEventListener('keydown', detectKeyDown);
-  // }, []);
+  useEffect(() => {
+    document.addEventListener('keydown', detectKeyDown);
+  }, []);
 
-  // function detectKeyDown(e) {
-  //   console.log(e.key);
-  //   const key = 1;
-  //   dispatch({ type: ACTIONS.ADD_DIGIT, payload: e.key.toString() });
-  // }
+  function detectKeyDown(e) {
+    switch (e.key) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '.':
+        dispatch({ type: ACTIONS.ADD_DIGIT, payload: { digit: e.key } });
+        break;
+      case '+':
+      case '-':
+      case '*':
+        dispatch({
+          type: ACTIONS.CHOOSE_OPERATION,
+          payload: { operation: e.key },
+        });
+        break;
+      case '/':
+        dispatch({
+          type: ACTIONS.CHOOSE_OPERATION,
+          payload: { operation: '÷' },
+        });
+        break;
+      case 'Enter':
+        dispatch({ type: ACTIONS.EVALUATE });
+        break;
+      case 'Backspace':
+        dispatch({ type: ACTIONS.DELETE_DIGIT });
+        break;
+      case 'Escape':
+        dispatch({ type: ACTIONS.CLEAR });
+        break;
+    }
+  }
 
   return (
     <div className='calculator-grid'>
@@ -188,11 +216,7 @@ function App() {
         DEL
       </button>
       <OperationButton operation='÷' dispatch={dispatch} />
-      <DigitButton
-        digit='1'
-        dispatch={dispatch}
-        onKeyPress={() => console.log('dispatch')}
-      />
+      <DigitButton digit='1' dispatch={dispatch} />
       <DigitButton digit='2' dispatch={dispatch} />
       <DigitButton digit='3' dispatch={dispatch} />
       <OperationButton operation='*' dispatch={dispatch} />
